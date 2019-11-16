@@ -1,0 +1,21 @@
+<!-- Renvoyer les infos de déverouillage -->
+<%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
+<%= render "devise/shared/error_messages", resource: resource %>
+<div class="card-form" style="width: 19rem;">
+  <div class="card-body">
+    <div class="config-card-alias"><%=current_user.alias%></div>
+    <p class="p-info">Mot de passe oublié</p>
+    <div class="separator"></div>
+
+    <form method="post" action="traitement.php">
+      <%= f.email_field :email, autofocus: true, autocomplete: "Email", :class => "loginput", :placeholder =>"Quel est votre Email?" %>
+    </form>
+
+    <div class="actions">
+      <%= f.submit "Renvoyer les instructions", :class => "btn-primary-test" %>
+      <% end %>
+    </div>
+    <div class="separator"></div>
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

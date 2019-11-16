@@ -1,0 +1,2 @@
+class PositionSearch < ApplicationRecord
+end

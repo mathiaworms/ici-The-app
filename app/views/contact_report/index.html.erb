@@ -1,0 +1,27 @@
+<body class="admin-color">
+<h1 class="text-center card-title">Tous les contacts</h1>
+  <br><br><br>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Titre</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date de création</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+    <% @all_report.each do |report| %>
+	    <tbody>
+	      <tr>
+	        <td scope="row" id="title-<%= report.id %>"><%= report.title %></td>
+	        <td scope="row" id="content-<%= report.id %>"><%= report.content %></td>
+	        <td scope="row" id="date-<%= report.id %>"><%= report.created_at.asctime %></td>
+	        <td><%= link_to 'Supprimer', contact_report_path(report.id), action: 'destroy', method: 'delete', data: { confirm: "Etes-vous sûr de vouloir supprimer cet message ?" } %>
+	        </td>
+	      </tr>
+	    </tbody>
+    <% end %>
+  </table>
+  </body>
+

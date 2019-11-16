@@ -1,0 +1,65 @@
+
+<script> 
+
+
+  var options = {enableHighAccuracy: true,}
+
+  function initialize(position, accuracy) {
+    console.log(position.lat+";"+position.lng);
+    document.getElementById('coordinatestring').value = `${position.lat}//${position.lng}` ;
+  }
+
+  function locationFound(position) {
+    initialize( 
+      {lat: position.coords.latitude, lng: position.coords.longitude}, position.coords.accuracy);
+  }
+
+  function locationNotFound() {
+    alert('Not able to find your location');
+  }
+
+  function page_loaded_test() {
+    navigator.geolocation.getCurrentPosition(locationFound, locationNotFound, options);
+  }
+  $( document ).on('turbolinks:load', function() {
+    page_loaded_test()})
+
+  </script>
+
+
+<%= form_tag admins_path, action: 'create' do %>
+  <div class="card-form" style="width: 15rem;">
+    <p class="p-stats"><%=current_user.alias %> propose...</p>
+    <div class="form-group ">
+      <%= text_field_tag :title, "", autofocus: true, placeholder: "Titre de l'événement !", :class =>"title-form", :maxlength => "20" %>
+    </div> 
+
+    <div class="rectangle-card-create-event">
+      <% if current_user.age_range != 100 %>
+      <p>En création, de <%= age_range_min %> à <%= age_range_max %> ans...<br>...à votre position actuelle</p>
+      <% else %>
+      <p>En création, pour tous les âges<br>...à votre position actuelle</p>
+      <% end %>
+
+    </div>
+    <%= hidden_field_tag :coordinatestring, :id => "coordinatestring"  %>
+
+    <div>
+      <%= text_area_tag :description, "", autofocus: true, placeholder: "Ecrivez ici une courte description de votre sortie pour donner envie aux autres de vous rejoindre !", :class => "description-form", :style => "resize: none", :maxlength => "104" %>
+    </div>
+
+    <div class="form-group members-number">
+      <%= number_field_tag :attendees_max, "", min: 3, max: 10, autofocus: true, placeholder: "Choisir de 3 à 10 invités", :class =>"form-style", :style => "border: none" %>
+    </div>
+
+    <div class="form-group members-number">
+      <%= number_field_tag :end_time, "", min: 15, max: 180, autofocus: true, placeholder: "Choisir entre 15 et 180 min", :class =>"form-style", :style => "border: none" %>
+    </div>
+
+    <div>
+      <%= submit_tag "c'est parti !" , :class =>"button-event" %>
+      <% end %>
+    </div>
+  </div>
+
+

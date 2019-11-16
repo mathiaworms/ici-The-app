@@ -1,0 +1,273 @@
+<div id='map' style='width: 100%; height: 100%; position:absolute;z-index: -1;'></div>
+<script>
+	mapboxgl.accessToken = '<%= 
+	require 'dotenv'
+	Dotenv.load('.env')
+	ENV['MAP_BOX_APIKEY'] %>'
+	let map = new mapboxgl.Map({
+		container: 'map',
+		style: 'mapbox://styles/kominaaa/cjwl76sdm0lon1cpnyx441327',
+		center: [ <%= @results_pos_1 %>, <%= @results_pos_2 %> ],
+		minZoom: 14
+	});
+
+  var options = {
+    enableHighAccuracy: true,
+  }
+
+  function initialize(position, accuracy) {
+    map.flyTo({
+      speed: 150,
+      center: [
+      position.lng,
+      position.lat]
+    });
+ 
+
+
+    var popupeux = new mapboxgl.Popup({  offset: [0, 80] })
+      .setHTML('<div><p><%= link_to "Créer une sortie", new_event_path, class: "btn btn-primary", style: "margin-top: -5px";%></p></div>');
+
+    var test = document.createElement('div');
+    test.className = 'marker';
+    var markereux = new mapboxgl.Marker(test)
+    .setPopup(popupeux)
+    .setLngLat([position.lng  , position.lat ])
+    .addTo(map);
+
+  }
+
+    // request is succesful 
+    function locationFound(position) {
+      initialize( 
+        {lat: position.coords.latitude, lng: position.coords.longitude},
+        position.coords.accuracy
+        );
+    }
+
+    function locationNotFound() {
+      alert('Not able to find your location');
+    }
+
+    function page_loaded() {
+      // the page is loaded, we can send a request to search for the location of the user
+      navigator.geolocation.getCurrentPosition(locationFound, locationNotFound, options);
+    }
+
+    map.on("load", function () {
+      /* Image: An image is loaded and added to the map. */
+      map.loadImage("https://i.imgur.com/MK4NUzI.png", function(error, image) {
+       if (error) throw error;
+       map.addImage("custom-marker", image);
+       /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
+       map.addLayer({
+        id: "places",
+        type: "symbol",
+        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
+        source: {
+         type: "geojson",
+         data: {
+          type: 'FeatureCollection',
+          features: [
+          <% current_time = DateTime.now %>
+          <% i = 0 %>
+          <% @all_event.each do |event|  %>
+          <% i +=  1 %>
+          <% if event.host == current_user && event.is_finish? == false && current_time <= event.end_time %>
+
+          {
+
+           type: 'Feature',
+           properties: {
+             description: '<div><p class="poptext-small"> <%=event.host.alias %> propose...</p><p class="poptext-eventname-self"><%=event.title %></p><p><%= link_to "Editer", edit_event_path(event),  class: "btn btn-secondary btn-block"%> </p></div>'
+           },
+           geometry: {
+            type: "Point",
+            coordinates: [<%= event.longitude_pos %>, <%= event.latitude_pos %>]
+          }}
+          <% if i < @all_event.length %> 
+          , 
+
+          <% end %>
+          <%else %>
+          <% end %>
+
+          <% end %>
+
+          ]
+        }
+      },
+      layout: {
+       "icon-image": "custom-marker",
+       "icon-allow-overlap": true
+     }
+   });
+
+     });
+      map.loadImage("https://i.imgur.com/3mlnniE.png", function(error, image) {
+       if (error) throw error;
+       map.addImage("custom-marker-2", image);
+       /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
+       map.addLayer({
+        id: "places-2",
+        type: "symbol",
+        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
+        source: {
+         type: "geojson",
+         data: {
+          type: 'FeatureCollection',
+          features: [
+          <% i = 0 %>
+          <% @all_event.each do |event|  %>
+          <% i +=  1 %>
+          <% if event.host != current_user && event.is_finish? == false && current_time <= event.end_time  && (user_age > event.host_age-event.host.age_range && user_age < event.host_age+event.host.age_range) %>
+          {
+
+           type: 'Feature',
+           properties: {
+             description: '<div><p class="poptext-small"><%=event.host.alias %> propose...</p><p class="poptext-eventname"><%=event.title %></p><p><%= link_to "Rejoindre", event_path(event.id), class: "btn btn-secondary btn-block"  %> </p></div>'
+           },
+           geometry: {
+            type: "Point",
+            coordinates: [<%= event.longitude_pos %>, <%= event.latitude_pos %>]
+          }}
+          <% if i < @all_event.length %> 
+          , 
+
+          <% end %>
+          <%else %>
+          <% end %>
+
+          <% end %>
+
+          ]
+        }
+      },
+      layout: {
+       "icon-image": "custom-marker-2",
+       "icon-allow-overlap": true
+     }
+   });
+
+     });
+    });
+  // When a click event occurs on a feature in the places layer, open a popup at the
+
+// location of the feature, with description HTML from its properties.
+map.on('click', 'places', function (e) {
+  var coordinates = e.features[0].geometry.coordinates.slice();
+  var description = e.features[0].properties.description;
+
+// Ensure that if the map is zoomed out such that multiple
+// copies of the feature are visible, the popup appears
+// over the copy being pointed to.
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+
+
+
+
+
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'places', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'places', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('click', 'places-2', function (e) {
+  var coordinates = e.features[0].geometry.coordinates.slice();
+  var description = e.features[0].properties.description;
+
+// Ensure that if the map is zoomed out such that multiple
+// copies of the feature are visible, the popup appears
+// over the copy being pointed to.
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+
+
+
+
+
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+
+});// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'places-2', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'places-2', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+
+class PitchToggle {
+  constructor({ bearing = -20, pitch = 70, minpitchzoom = null }) {
+    this._bearing = bearing;
+    this._pitch = pitch;
+    this._minpitchzoom = minpitchzoom;
+  }
+
+  onAdd(map) {
+    this._map = map;
+    let _this = this;
+
+    this._btn = document.createElement("button");
+    this._btn.className = "mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-3d";
+    this._btn.type = "button";
+    this._btn["aria-label"] = "Toggle Pitch";
+    this._btn.onclick = function() {
+      if (map.getPitch() === 0) {
+        let options = { pitch: _this._pitch, bearing: _this._bearing };
+        if (_this._minpitchzoom && map.getZoom() > _this._minpitchzoom) {
+          options.zoom = _this._minpitchzoom;
+        }
+        map.easeTo(options);
+        _this._btn.className =
+        "button_mapbox mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-2d";
+      } else {
+        map.easeTo({ pitch: 0, bearing: 0 });
+        _this._btn.className =
+        "button_mapbox mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-3d";
+      }
+    };
+
+    this._container = document.createElement("div");
+    this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+    this._container.appendChild(this._btn);
+
+    return this._container;
+  }
+
+  onRemove() {
+    this._container.parentNode.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
+map.addControl(new mapboxgl.NavigationControl(), "bottom-left");
+map.addControl(new PitchToggle({ minpitchzoom: 11 }), "bottom-left");
+</script>
+</div>
+<div id="section2-wrapper" class="wrapper"> 
+<button class="myButton" onclick="page_loaded()" style="position: absolute; bottom: 3px; left: 40% ; right: 40%">
+ <svg class="icon-refresh" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 31" width="60px" height="60px" style="fill-rule:evenodd; filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.25)); " >
+    <g fill="#007bff">
+      <path d="M19.289,20.815c4.889,0.775 8.311,2.555 8.311,4.625c0,2.782 -6.184,5.04 -13.8,5.04c-7.616,0 -13.8,-2.258 -13.8,-5.04c0,-2.063 3.402,-3.839 8.266,-4.618c0.327,0.436 0.654,0.857 0.976,1.262c-3.283,0.443 -5.535,1.349 -5.535,2.394c0,1.476 4.495,2.676 10.042,2.683l0.001,0l0.05,0l0,0c5.57,0 10.093,-1.202 10.093,-2.683c0,-1.05 -2.273,-1.959 -5.58,-2.4c0.322,-0.405 0.649,-0.827 0.976,-1.263Zm-5.542,-20.815c0.007,0 0.049,0 0.055,0c3.235,0.016 8.623,2.216 8.623,8.857c0,6.446 -8.095,15.031 -8.631,15.592l-0.039,0c-0.535,-0.561 -8.631,-9.146 -8.631,-15.592c0,-6.641 5.389,-8.841 8.623,-8.857Zm0.036,4.097c2.47,0 4.475,1.997 4.475,4.458c0,2.46 -2.005,4.458 -4.475,4.458c-2.469,0 -4.474,-1.998 -4.474,-4.458c0,-2.461 2.005,-4.458 4.474,-4.458Z"/>
+    </g>
+  </svg>
+  </button>
+</div>

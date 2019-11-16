@@ -1,0 +1,33 @@
+<body class="admin-color">
+<h1 class="text-center card-title ">Événements en cours</h1>
+<h2 class="text-center"><%= link_to "Créer un événement", new_admin_path %></h2>
+<p class="text-center"><%= link_to "Voir les messages de contact", contact_report_index_path %></p>
+ 
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Titre</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date de création</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+    <% @events.each do |event| %>
+      <% if event.is_finish? == false %>
+        <tbody>
+          <tr>
+            <td scope="row" id="title-<%= event.id %>"><%= event.title %></td>
+            <td scope="row" id="description-<%= event.id %>"><%= event.description %></td>
+            <td scope="row" id="time-<%= event.id %>"><%= event.created_at.asctime %></td>
+            <td scope="row" id="edit-<%= event.id %>"><%= link_to 'Éditer', edit_event_path(event.id) %><br>
+              <%= link_to 'Supprimer', event_path(event.id), action: 'destroy', method: 'delete', remote: true, data: { confirm: "Etes-vous sûr de vouloir supprimer cet événement ?" } %>
+            </td>
+          </tr>
+        </tbody>
+    <% end %>
+    <% end %>
+  </table>
+</div>
+<body>
+

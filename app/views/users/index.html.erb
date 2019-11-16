@@ -1,0 +1,46 @@
+<div class="card-form">
+  <div style="display: flex; justify-content: flex-end;">
+    <%= link_to "", root_path, :class => "button-close" %>
+  </div>
+  <div class="card-body" style="border-top: 0px; padding-top: 0px;">
+    <div class="config-card-alias text-center"><%=current_user.alias%></div>
+    <p class="top-info text-center"><%= user_age %> ans</p>
+    <p class="top-info"><strong><%= @events_hosted.length %> organisations<br><%= @events_attended.length %> participations</strong></p>
+    <p class="top-info">Tranche d'age de vos sorties :</p>
+    <div class="separator-large">
+      <div style="display: flex; justify-content: space-around;">
+        <% if current_user.age_range == 5 %>
+        <p><%= link_to user_path(5), method: 'put', controller: 'users', action: 'update', :id => "ajax-5", :class => 'btn-profil-toggle', remote: true do %> Ages<br/> proches <% end %></p>
+        <% else %>
+        <p><%= link_to user_path(5), method: 'put', controller: 'users', action: 'update', :id => "ajax-5", :class => 'btn-profil-off', remote: true do %> Ages<br/> proches <% end %></p>
+        <% end %>
+        <% if current_user.age_range == 10 %>
+        <p><%= link_to user_path(10), method: 'put', controller: 'users', action: 'update', :id => "ajax-10", :class => 'btn-profil-toggle', remote: true do %> Ages<br/> étendus <% end %></p>
+        <% else %>
+        <p><%= link_to user_path(10), method: 'put', controller: 'users', action: 'update', :id => "ajax-10", :class => 'btn-profil-off', remote: true do %> Ages<br/> étendus <% end %></p>
+        <% end %>
+        <% if current_user.age_range == 100 %>
+        <p><%= link_to user_path(100), method: 'put', controller: 'users', action: 'update', :id => "ajax-100", :class => 'btn-profil-toggle', remote: true do %> Tous<br/> ages <% end %> </p>
+        <% else %>
+        <p><%= link_to user_path(100), method: 'put', controller: 'users', action: 'update', :id => "ajax-100", :class => 'btn-profil-off', remote: true do %> Tous<br/> ages <% end %> </p>
+        <% end %>
+      </div>
+    </div>
+    <div class="separator-small">
+      <div>
+        <%= link_to "Modifier le compte", edit_user_registration_path, :class => "btn btn-primary btn-block" %>
+      </div>
+    </div>
+    <div class="separator-small">
+      <div class="text-center">
+        <%= link_to "Se déconnecter", destroy_user_session_path, method: :delete, data: { confirm: 'Etes-vous sur de vouloir vous déconnecter?' }, :class => "btn btn-secondary" %>
+      </div>
+    </div>
+    <div class="separator-small">
+      <div class="text-center">
+        <%= link_to "Revenir à la carte", root_path, :class => "btn-tertiary"  %>
+      </div>
+    </div>
+  </div>
+</div>
+

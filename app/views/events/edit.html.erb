@@ -1,0 +1,117 @@
+<div class="card-form">
+  <div style="display: flex; justify-content: space-between; align-items: middle;">
+    <p class="p-owner"><%=current_user.alias %> propose...</p>
+    <%= form_tag(search_path(@event), :method => "put") do %>
+    <%= hidden_field_tag :coordinatestring %>
+    <%= submit_tag  "" , :action => "put", :method => "update", class: "button-close" %>
+    <% end %>
+  </div>
+  <div class="card-body">
+    <%= form_tag event_path, method: 'patch', action: 'update' do %>
+
+    <div class="form-group text-left">
+      <label for="title">Nom de votre sortie</label>
+      <%= text_field_tag :title, "#{@event.title}", :class =>"form-control", :maxlength => "19" %>
+      <small id="eventtitlehelp" class="form-text text-muted">19 caractères maximum.</small>
+    </div> 
+  
+
+  <div class="rectangle-card-created-event">
+    <% if current_user.age_range != 100 %>
+    <p>Démarré depuis <%= @event.event_duration %><br>De <%= age_range_min %> à <%= age_range_max %> ans<br>
+      <% if @position.first.street == nil %>
+      À <%= @position.first.city %> <% else %> À <%= @position.first.street %><br>
+      <% end %>
+      <% else %>
+      Démarré depuis <%= @event.event_duration %> <br> Pour tous les âges<br>
+      <% if @position.first.street == nil %>
+      À <%= @position.first.city %> <% else %> À <%= @position.first.street %></p>
+      <% end %>
+      <% end %>
+  </div>
+
+  <div class="card-body">
+    <div class="form-group text-left">
+      <label for="description">Description de la sortie</label>
+      <%= text_area_tag :description, "#{@event.description}", :class => "form-control", :style => "resize: none", :maxlength => "130" %>
+      <small id="eventdescriptionhelp" class="form-text text-muted">130 caractères maximum.</small>
+    </div>
+
+    <div class="form-group text-left">
+      <label for="attendees_max">Nombre d'invités</label>
+      <%= select_tag :attendees_max, raw("<option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>"), :class => "form-control", :id => "attendees-max-selector" %>
+    </div>
+
+    <div class="form-group text-left">
+      <label for="end_time">Durée prévue</label>
+      <%= select_tag :end_time, raw("<option>15</option><option>30</option><option>45</option><option>60</option><option>90</option><option>120</option><option>180</option>"), :class => "form-control", :id => "attendees-max-selector" %>
+    </div>
+
+    <div class="logo_button_members text-center">
+
+      <% @event.users.each do |verif| %>
+      <% if verif == current_user && Attendance.find_by(event: @event, user: current_user) != nil %>
+      <% if Attendance.find_by(event: @event, user: current_user).is_confirmed? == true %>
+      <svg class="icon-user_present" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <defs>
+          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#46BDEC;" />
+            <stop offset="100%" style="stop-color:#4661EC;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#blue-gradient)">
+          <path d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+        </g>
+      </svg>
+
+      <% elsif Attendance.find_by(event: @event, user: current_user).is_confirmed? == false   %>
+      <svg class="icon-user_onway" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#AEDAEC" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+
+      <% end %>
+      <% elsif verif != current_user %> 
+      <% if Attendance.find_by(event: @event, user: verif).is_confirmed? == true %>
+      <svg class="icon-attendee_present" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <defs>
+          <linearGradient id="orange-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8902F;" />
+            <stop offset="100%" style="stop-color:#F65E2D;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#orange-gradient)">    
+          <path d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+        </g>
+      </svg>
+      <% elsif Attendance.find_by(event: @event, user: verif).is_confirmed? == false %>
+      <svg class="icon-attendee_onway" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#FBCEA5" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% end %>
+      <% else  %> 
+      <svg class="icon-attendee_empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="1.5%" height="1.5%">
+        <path fill="#CECECE" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% end %> 
+      <% end %>
+      <% iterate = 1 %>
+      <% while  iterate <= @event.attendees_max.to_i - @event.users.length.to_i %>
+      <svg class="icon-attendee_empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#CECECE" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% iterate += 1 %>
+      <% end %>
+      <div class="separator-large">
+      <div>
+        <%= submit_tag "Modifier", class: "btn btn-primary btn-block" %>
+      </div>
+
+      <div>
+        <%= link_to "Terminer la sortie", event_path(@event), method: 'delete', action: 'destroy', :class =>"btn-tertiary", data: { confirm: "Etes-vous sûr de vouloir terminer cet événement ?" } %>
+      </div>
+    </div>
+    <% end %>
+
+  </div>
+</div>
+</div>

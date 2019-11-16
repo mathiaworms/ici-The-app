@@ -1,0 +1,66 @@
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= render "devise/shared/error_messages", resource: resource %>
+<div class="card-form">
+  <div class="card-body">
+    <p class="card-title">ici !</p>
+    <div class="logo_marker_event text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"  viewBox="0 0 90 120" width="20%" height="20%">
+        <defs>
+          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#46BDEC;" />
+            <stop offset="100%" style="stop-color:#4661EC;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#blue-gradient)">
+          <path d="M45 0C69.835 0 89.799 20.11 89.999 44.88c.225 27.746-35.05 75.105-45 75.121C33.318 120.021-.188 73.242.002 44.879.166 20.11 20.164 0 45 0zm0 14.969c16.553 0 29.991 13.402 29.991 29.91 0 16.507-13.438 29.91-29.991 29.91-16.552 0-29.99-13.403-29.99-29.91 0-16.508 13.438-29.91 29.99-29.91zm0 14.788c8.368 0 15.162 6.776 15.162 15.122S53.368 60 45 60c-8.369 0-15.163-6.775-15.163-15.121S36.631 29.757 45 29.757z"/>
+        </g>
+      </svg>
+    </div>
+  <form class="needs-validation">
+    <fieldset>
+      <label for="email">Addresse mail</label>
+      <%= f.email_field :email, autofocus: true, autocomplete: "Email", :class => "form-control" %>
+      <small id="ageHelp" class="form-text text-muted">Votre adresse mail doit être valide.</small>
+
+      
+      <label for="alias">Pseudo</label>
+      <%= f.text_field :alias, autofocus: true, autocomplete: "Pseudo", :class => "form-control" %>
+      <div class="separator-small"></div>
+      
+      <label for="birthday">Date de naissance</label><br>
+      <%= f.date_select :birthday, :type => "date", :start_year => Date.current.year, :end_year => 1930, :class => "form-control" %>
+      <div class="separator-small"></div>
+      
+      <div style="flex-direction: row;">
+        <label for="password">Mot de passe</label>
+        <%= f.password_field :password, autocomplete: "new-password", :class => "form-control" %>
+        <small id="ageHelp" class="form-text text-muted">Vous devez avoir au moins 18 ans.</small>
+      </div>
+      <div class="separator-small"></div>
+
+      <%= f.hidden_field :age_range, :value => 10 %>
+      
+      <label for="password_confirmation">Confirmer mot de passe</label>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", :class => "form-control" %>
+      <div class="separator-small"></div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" style="vertical-align: middle" id="mailcheck"/> <label class="form-check-label" for="mailcheck">Rester informé par mail.</label><br>
+        <input class="form-check-input"  type="checkbox" style="vertical-align: middle" id="CGUcheck" onclick="document.getElementById('submitbtn').classList.remove('disabled'); document.getElementById('submitbtn').disabled = false;" onchange="document.getElementById('submitbtn').disabled = !this.checked;"/><label label class="form-check-label" for="CGUcheck">J'ai lu et j'accepte les <strong></strong>>CGU</strong>.</label>
+      </div>
+    </fieldset>
+  </form>
+    
+
+    <div class="separator-small"></div>
+    <%= f.submit "S'inscrire", :class => "disabled btn btn-primary btn-block", :id => "submitbtn", :disabled => true %>
+    <% end %>
+
+    <div class="separator-small"></div>
+    
+    <div class="text-center">
+      <%= render "devise/shared/links" %>    
+    </div>
+
+  </div>
+</div>

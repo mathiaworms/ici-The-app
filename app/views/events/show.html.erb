@@ -1,0 +1,151 @@
+<pre>
+  <script> 
+    var options = {enableHighAccuracy: true,}
+
+    function initialize(position, accuracy) {
+     console.log(position.lat+";"+position.lng);
+
+
+     document.getElementById('coordinatestring').value = `${position.lat}//${position.lng}` ;
+
+   }
+
+   function locationFound(position) {
+    initialize( 
+      {lat: position.coords.latitude, lng: position.coords.longitude}, position.coords.accuracy);
+  }
+
+  function locationNotFound() {
+    alert('Not able to find your location');
+  }
+
+  function page_loaded_test() {
+    navigator.geolocation.getCurrentPosition(locationFound, locationNotFound, options);
+  }
+  $( document ).on('turbolinks:load', function() {
+    page_loaded_test()
+  })
+
+</script>
+</pre>
+
+
+<div class="card-form">
+  <div style="display: flex; justify-content: space-between; align-items: middle;">
+
+    <p class="p-owner"><%= @event.host.alias %> propose...</p>
+
+    <%= form_tag(search_path(@event), :method => "put") do %>
+    <%= submit_tag  "" , :action => "put", :method => "update", class: "button-close" %>
+    <% end %>
+  </div>
+  <div class="card-body">
+    <p class="config-card-event"><%= @event.title %></p>
+  </div>  
+  <div class="rectangle_card_event">
+    <p>Démarré depuis <%= @event.event_duration %><br><% if @position.first.street == nil %><%= @position.first.city %><% else %><%= @position.first.street %></p><% end %>
+  </div>
+
+  <div class="card-body">
+
+    <p class="top-info"><%= @event.description %></p>
+    <div class="logo_button_members text-center">
+
+      <% @event.users.each do |verif| %>
+      <% if verif == current_user && Attendance.find_by(event: @event, user: current_user) != nil %>
+      <% if Attendance.find_by(event: @event, user: current_user).is_confirmed? == true %>
+      <svg class="icon-user_present" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <defs>
+          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#46BDEC;" />
+            <stop offset="100%" style="stop-color:#4661EC;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#blue-gradient)">
+          <path d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+        </g>
+      </svg>
+
+      <% elsif Attendance.find_by(event: @event, user: current_user).is_confirmed? == false   %>
+      <svg class="icon-user_onway" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#AEDAEC" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+
+      <% end %>
+      <% elsif verif != current_user %> 
+      <% if Attendance.find_by(event: @event, user: verif).is_confirmed? == true %>
+      <svg class="icon-attendee_present" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <defs>
+          <linearGradient id="orange-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8902F;" />
+            <stop offset="100%" style="stop-color:#F65E2D;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#orange-gradient)">    
+          <path d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+        </g>
+      </svg>
+      <% elsif Attendance.find_by(event: @event, user: verif).is_confirmed? == false %>
+      <svg class="icon-attendee_onway" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#FBCEA5" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% end %>
+      <% else  %> 
+      <svg class="icon-attendee_empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="1.5%" height="1.5%">
+        <path fill="#CECECE" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% end %> 
+      <% end %>
+      <% iterate = 1 %>
+      <% while  iterate <= @event.attendees_max.to_i - @event.users.length.to_i %>
+      <svg class="icon-attendee_empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 90" width="5%" height="5%">
+        <path fill="#CECECE" d="M22 28c4.1 0 8 4.5 8 8.7V56c0 2.6-1 6-3 8-1 1-1.8 1.6-2 3l-2 19c-.3 2.5-2.5 4-5 4h-6c-2.7 0-4.7-1.3-5-4L5 67c-.2-1.4 0-2-1-3-2-1.9-4-5.4-4-8V37c0-4.2 3.9-9 8-9h14zM15 0c6.8 0 12 5.1 12 12s-5.2 12-12 12S3 18.9 3 12 8.2 0 15 0z"/>
+      </svg>
+      <% iterate += 1 %>
+      <% end %>
+      <br><br>
+      <% if @event.attendances.length < @event.attendees_max %>  
+      <% if current_user.attendances.length == 0 %>
+      <%= form_tag event_attendances_path(@event) do %>
+      <%= hidden_field_tag :coordinatestring %>
+      <%= submit_tag "Okay j'arrive !", controller: 'attendances', method: 'post', action: 'create' ,class: "btn btn-primary btn-block" %>
+      <% end %>
+      <% else %> 
+      <% if current_user.events.last == nil%>
+      <%= form_tag event_attendances_path(@event) do %>
+      <%= hidden_field_tag :coordinatestring %>
+      <%= submit_tag "Okay j'arrive !", controller: 'attendances', method: 'post', action: 'create',class: "btn btn-primary btn-block" %>
+      <% end %>
+      <% elsif current_user.events.last.is_finish? %>
+      <%= form_tag event_attendances_path(@event) do %>
+      <%= hidden_field_tag :coordinatestring %>
+      <%= submit_tag "Okay j'arrive !", controller: 'attendances', method: 'post', action: 'create',class: "btn btn-primary btn-block" %>
+      <% end %>
+      <% else %>
+      <% if Attendance.find_by(event: @event, user: current_user) != nil %>
+      <% if Attendance.find_by(event: @event, user: current_user).is_confirmed? == false %>
+      <%= form_tag(event_attendance_path(@event), method: :patch) do %>
+      <%= hidden_field_tag :coordinatestring %>
+      <%= submit_tag "Je suis sur place !", controller: 'attendances', method: 'patch', action: 'update',class: "btn btn-primary btn-block" %>
+      <% end %>
+      <% end %>
+      <% else %>
+      <%= form_tag(event_attendance_path(@event), method: :delete) do %>
+      <%= hidden_field_tag :coordinatestring %>
+      <%= submit_tag "Okay j'arrive !",class: "btn btn-primary btn-block" %>
+      <% end %>
+      <% end %>
+      <% end %>
+      <% end %>
+      <% else %>
+      <p>Il n'y a plus de place disponible pour cet événement</p>
+      <% end %>
+      <br>
+      <p class="text-center"><%= link_to "Revenir à l'index", root_path, class: "btn-tertiary" %></p>
+    </div>
+  </div>       
+</div>
+
+
+<!-- back -->
+

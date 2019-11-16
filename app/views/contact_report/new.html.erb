@@ -1,0 +1,38 @@
+
+<div class="card-form">
+  <div style="display: flex; justify-content: flex-end;">
+    <%= link_to "", root_path, :class => "button-close" %>
+  </div>
+  <%= form_tag contact_report_index_path, remote: true , action: 'create' do %>
+  <div class="card-body">
+    <div class="logo_marker_event text-center"> 
+      <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"  viewBox="0 0 90 120" width="20%" height="20%">
+        <defs>
+          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#46BDEC;" />
+            <stop offset="100%" style="stop-color:#4661EC;" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#blue-gradient)">
+          <path d="M45 0C69.835 0 89.799 20.11 89.999 44.88c.225 27.746-35.05 75.105-45 75.121C33.318 120.021-.188 73.242.002 44.879.166 20.11 20.164 0 45 0zm0 14.969c16.553 0 29.991 13.402 29.991 29.91 0 16.507-13.438 29.91-29.991 29.91-16.552 0-29.99-13.403-29.99-29.91 0-16.508 13.438-29.91 29.99-29.91zm0 14.788c8.368 0 15.162 6.776 15.162 15.122S53.368 60 45 60c-8.369 0-15.163-6.775-15.163-15.121S36.631 29.757 45 29.757z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="separator-small"></div>  
+    <div class="form-group text-left">
+      <label for="title" id="title-ajax">Sujet de votre message</label>
+      <%= text_field_tag :title, "", autofocus: true, :class =>"form-control", :maxlength => "19" %>
+      <small id="titlehelp" class="form-text text-muted">19 caractères maximum.</small>
+    </div> 
+
+    <div class="form-group text-left">
+            <label for="content" id="content-ajax">Corps du message</label>
+      <%= text_area_tag :content, "", autofocus: true, :class => "form-control", :rows => "10", :maxlength => "130", :style => "resize: none;" %>
+      <small id="contentelp" class="form-text text-muted">130 caractères maximum.</small>
+    </div>
+
+    <div>
+      <%= submit_tag "Envoyer", :class =>"btn btn-primary btn-block", :id => "btn-ajax" %>
+    </div>
+    <% end %>
+  </div>

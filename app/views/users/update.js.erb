@@ -1,0 +1,22 @@
+<% if current_user.age_range == 5 %> 
+        document.getElementById("ajax-5").classList.remove("btn-profil-off");
+        document.getElementById("ajax-5").classList.add("btn-profil-toggle");
+        document.getElementById("ajax-10").classList.remove("btn-profil-toggle");
+        document.getElementById("ajax-10").classList.add("btn-profil-off");
+        document.getElementById("ajax-100").classList.remove("btn-profil-toggle");  
+        document.getElementById("ajax-100").classList.add("btn-profil-off");
+<% elsif current_user.age_range == 10 %>
+        document.getElementById("ajax-5").classList.remove("btn-profil-toggle");
+        document.getElementById("ajax-5").classList.add("btn-profil-off");
+        document.getElementById("ajax-10").classList.remove("btn-profil-off");
+        document.getElementById("ajax-10").classList.add("btn-profil-toggle");
+        document.getElementById("ajax-100").classList.remove("btn-profil-toggle");  
+        document.getElementById("ajax-100").classList.add("btn-profil-off");
+<% elsif current_user.age_range == 100 %>
+        document.getElementById("ajax-5").classList.remove("btn-profil-toggle");
+        document.getElementById("ajax-5").classList.add("btn-profil-off");
+        document.getElementById("ajax-10").classList.remove("btn-profil-toggle");
+        document.getElementById("ajax-10").classList.add("btn-profil-off");
+        document.getElementById("ajax-100").classList.remove("btn-profil-off");  
+        document.getElementById("ajax-100").classList.add("btn-profil-toggle");
+<% end %>

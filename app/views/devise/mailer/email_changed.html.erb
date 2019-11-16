@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <!-- CDN Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Pattaya|Roboto:300,400,700&display=swap" rel="stylesheet">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css" media="screen">
+    body{
+        background-image: url(https://i.imgur.com/kbfSuby.jpg) ;
+        background-position:center center;
+    }
+     .card{ text-align: center;
+            background-color: #F8F8F8 ;
+            width: 309px;
+            height: 550px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
+      h1 {  color: #F8902F;
+            text-align: center;
+            font-size: 80px;
+            margin-top: -10px;
+            font-family: Pattaya;
+      }
+      h2 { color: #4988FF;
+      font-family: Pattaya, Helvetica, sans-serif;
+      }
+      h3{ color: #737373;
+      font-family: Pattaya, Helvetica, sans-serif;
+      }
+      p{
+        color: #737373;
+        font-family: Roboto;
+      }
+      ul { list-style: none;
+           padding-inline-start: 5px;
+      }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <ul>
+          <h1>ici!</h1>
+            <h2>Salut <%= @email %>!</h2>
+              <% if @resource.try(:unconfirmed_email?) %>
+                <p>Nous vous contactons pour vous signaler une demande de changement de mail vers <%= @resource.unconfirmed_email %>.</p>
+              <% else %>
+                <p>Nous vous contactons pour vous signaler que votre mail à été changé vers <%= @resource.email %>.</p>
+              <% end %>
+          <p>A très bientôt !</p>
+        </ul>
+    </div>
+        
+  <%= yield %>
+</body>
+</html>
+            

@@ -1,0 +1,78 @@
+
+<script> 
+
+
+  var options = {enableHighAccuracy: true,}
+
+  function initialize(position, accuracy) {
+    console.log(position.lat+";"+position.lng);
+    document.getElementById('coordinatestring').value = `${position.lat}//${position.lng}` ;
+  }
+
+  function locationFound(position) {
+    initialize( 
+      {lat: position.coords.latitude, lng: position.coords.longitude}, position.coords.accuracy);
+  }
+
+  function locationNotFound() {
+    alert('Not able to find your location');
+  }
+
+  function page_loaded_test() {
+    navigator.geolocation.getCurrentPosition(locationFound, locationNotFound, options);
+  }
+  $( document ).on('turbolinks:load', function() {
+    page_loaded_test()})
+
+  </script>
+
+
+
+  <div class="card-form">
+    <div style="display: flex; justify-content: space-between; align-items: middle;">
+      <p class="p-owner"><%=current_user.alias %> propose...</p>
+
+      <%= link_to "", root_path, :class => "button-close" %>
+    </div>
+    <div class="card-body">
+      <%= form_for 'test', :url => {:action => "create"} do |f| %>
+
+      <div class="form-group text-left">
+        <label for="title">Nom de votre sortie</label>
+        <%= f.text_field :title, autofocus: true, :class =>"form-control", :maxlength => "19" %>
+        <small id="eventtitlehelp" class="form-text text-muted">19 caractères maximum.</small>
+      </div> 
+
+    <div class="rectangle-card-created-event">
+      <% if current_user.age_range != 100 %>
+      <p>En création, de <%= age_range_min %> à <%= age_range_max %> ans...<br>...à votre position actuelle</p>
+      <% else %>
+      <p>En création, pour tous les âges<br>...à votre position actuelle</p>
+      <% end %>
+    </div>
+    <div class="card-body">
+      <%= f.hidden_field :coordinatestring, :id => "coordinatestring"  %>
+
+      <div class="form-group text-left">
+        <label for="description">Description de la sortie</label>
+        <%= f.text_area :description, autofocus: true, placeholder: "Une courte description de votre sortie pour donner envie aux autres de vous rejoindre !", :class => "form-control", :rows => "7", :style => "resize: none", :maxlength => "130" %>
+        <small id="eventdescriptionhelp" class="form-text text-muted">130 caractères maximum.</small>
+      </div>
+
+      <div class="form-group text-left">
+        <label for="attendees_max">Nombre d'invités</label>
+        <%= select_tag :attendees_max, raw("<option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>"), :class => "form-control", :id => "attendees-max-selector" %>
+      </div>
+
+      <div class="form-group text-left">
+        <label for="end_time">Durée prévue</label>
+        <%= select_tag :end_time, raw("<option>15</option><option>30</option><option>45</option><option>60</option><option>90</option><option>120</option><option>180</option>"), :class => "form-control", :id => "attendees-max-selector" %>
+      </div>
+
+      <div>
+        <%= f.submit "C'est parti !" , :class =>"btn btn-primary btn-block" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+      </div>
