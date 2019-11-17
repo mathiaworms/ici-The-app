@@ -1,5 +1,5 @@
 u = User.create(alias: "joules", birthday: "04/12/1995", email: "joules@yopmail.com", password: "topsecret", age_range: 10)
-u1 = User.create(alias: "roulix", birthday: "10/05/1998", email: "roulix@yopmail.com", password: "topsecret", age_range: 100)
+=begin u1 = User.create(alias: "roulix", birthday: "10/05/1998", email: "roulix@yopmail.com", password: "topsecret", age_range: 100)
 u2 = User.create(alias: "JE", birthday: "04/12/1995", email: "je@yopmail.com", password: "topsecret", age_range: 100, is_admin?: true)
 u3 = User.create(alias: "JeremDall", birthday: "14/02/1999", email: "jeremzo@yopmail.com", password: "topsecret", age_range: 100)
 u4 = User.create(alias: "WeshMaggle", birthday: "20/05/1984", email: "bobbypill@yopmail.com", password: "topsecret", age_range: 10)
@@ -29,3 +29,4 @@ event11 = Event.create!(title: "🍺🍺🍺Une chopine🍺🍺🍺", descriptio
 event12 = Event.create!(title: "🍸Soirée cocktails🍹", description: "Je sors tester le nouveau bar à cocktails, Maubeuge Sunrise🍹 et Kaki Russian🍸, glouglou", host_id: User.all.sample.id, latitude_pos: 48.870889, longitude_pos: 2.353264, attendees_max: rand(3..10) ,end_time: current_time + 90.minutes)
 
 puts "DB entries created!"
+=end
